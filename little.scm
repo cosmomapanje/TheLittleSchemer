@@ -1,3 +1,7 @@
+(define atom?
+  (lambda (x)
+    (and (not (pair? x)) (not (null? x)))))
+
 (define firsts
   (lambda (list)
   (cond ((null? list) (quote ()))
@@ -105,3 +109,35 @@
 	  ((zero? (sub1 n)) (cdr lst))
 	  (else (cons (car lst) (rempick (sub1 n) (cdr lst)))))))
 	   
+;;; P77 "number?"
+
+;;; P77 "no-nums"
+(define no-nums
+  (lambda (l)
+    (cond ((null? l) (quote ()))
+	  (else (cond ((number? (car l))
+		       (no-nums (cdr l)))
+		      (else (cons (car l)
+				  (no-nums (cdr l)))))))))
+
+;;; P78 "all-numsers)
+(define all-numbers
+  (lambda (l)
+    (cond ((null? l) (quote ()))
+	  (else (cond ((number? (car l))
+		       (cons (car l) (all-numsers (cdr l))))
+		      (else (all-numbers (cdr l))))))))
+
+;;; P78 "eqan?"
+(define eqan?
+  (lambda (n1 n2)
+    (cond ((and (number? n1) (number? n2)) (= n1 n2))
+	  ((or (number? n1) (number? n2)) #f)
+	  (else (eq? n1 n2)))))
+
+;;; P78 "occur"
+(define occur
+  (lambda (n lst)
+    (cond ((null? lst) 0)
+	  (else (cond ((eqan? n (car lst)) (+ 1 (occur n (cdr lst))))
+		      (else (+ (occur n (cdr lst)))))))))
