@@ -141,3 +141,18 @@
     (cond ((null? lst) 0)
 	  (else (cond ((eqan? n (car lst)) (+ 1 (occur n (cdr lst))))
 		      (else (+ (occur n (cdr lst)))))))))
+
+;;; P79 "one?"
+(define one?
+  (lambda (n)
+    (cond ((zero? n) #f)
+	  (else (zero? (sub1 n))))))
+
+;;; P79 rewrite "rempick-v2"
+(define rempick-v2
+  (lambda (n lst)
+    (cond ((one? n) (cdr lst))
+	  (else (cons (car lst) (rempick (sub1 n) (cdr lst)))))))
+
+
+;; Chapter 5
