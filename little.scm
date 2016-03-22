@@ -156,3 +156,54 @@
 
 
 ;; Chapter 5
+
+;;;P81 "rember*"
+(define rember*
+  (lambda (a lst)
+    (cond ((null? lst) (quote ()))
+	  (else (cond ((atom? (car lst)) 
+		       (cond ((eq? (car lst) a) 
+			      (rember* a (cdr lst)))
+			     (else (cons (car lst)
+					 (rember* a (cdr lst))))))
+		      (else (cons (rember* a (car lst))
+				  (rember* a (cdr lst)))))))))
+
+;;; P82 "insertR*"
+(define insertR*
+  (lambda (new old lst)
+    (cond ((null? lst) (quote ()))
+	  (else (cond ((atom? (car lst))
+		       (cond ((eq? old (car lst))
+			      (cons old (cons new
+					      (insertR* new old (cdr lst)))))
+			     (else (cons (car lst) 
+					 (insertR* new old (cdr lst))))))
+		      (else (cons (insertR* new old (car lst))
+				  (insertR* new old (cdr lst)))))))))
+		       
+		       
+;;; P84 "occur*"
+(define occur*
+  (lambda (a lst)
+    (cond ((null? lst) 0)
+	  ((atom? (car lst))
+	   (cond 
+	    ((eq? a (car lst))
+	     (add1 (occur* a (cdr lst))))
+	    (else (occur* a (cdr lst)))))
+	  (else (+ (occur* a (car lst)) 
+		   (occur* a (cdr lst)))))))
+
+;;; P85 "subst*
+(define subst*
+  (lambda (new old l)
+    (cond ((null? l) (quote ()))
+	  ((atom? (car l))
+	   (cond 
+	    ((eq? old (car l))
+	     (cons new (subst* new old (cdr l))))
+	    (else (cons (car l) (subst* new old (cdr l))))))
+	  (else (cons (subst* new old (car l)) 
+		      (subst* new old (cdr l)))))))
+	   
