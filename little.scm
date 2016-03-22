@@ -207,3 +207,31 @@
 	  (else (cons (subst* new old (car l)) 
 		      (subst* new old (cdr l)))))))
 	   
+;;; P86 "insertL*"
+(define insertL*
+  (lambda (new old l)
+    (cond ((null? l) (quote ()))
+	  ((atom? (car l)) 
+	   (cond ((eq? old (car l)) (cons new (cons old (insertL* new old (cdr l)))))
+		 (else (cons (car l) (insertL* new old (cdr l))))))
+	  (else (cons (insertL* new old (car l)) (insertL* new old (cdr l)))))))
+	 
+;;; P87 "member*"
+(define member*
+  (lambda (a lst)
+    (cond ((null? lst) #f)
+	  ((atom? (car lst))
+	   (or (eq? a (car lst)) (member* a (cdr lst))))
+	  (else (or (member* a (car lst)) (member* a (cdr lst)))))))
+
+;;; P87 "leftmost"
+(define leftmost
+  (lambda (lst)
+    (cond 
+     ((atom? (car lst)) (car lst))
+     (else (leftmost (car lst))))))
+
+;;; P91 "eqlist?"
+(define eqlist?
+  (lambda (l1 l2)
+    (cond ((
