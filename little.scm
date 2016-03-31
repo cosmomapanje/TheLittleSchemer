@@ -247,3 +247,74 @@
 	  (else (and (eqlist? (car l1) (car l2))
 		     (eqlist? (cdr l1) (cdr l2)))))))
 
+;;; P92 "eqlist2?"
+(define eqlist2?
+  (lambda (l1 l2)
+    (cond ((and (null? l1) (null? l2)) #t)
+	  ((or (null? l1) (null? l2)) #f)
+	  ((and (atom? (car l1)) (atom? (car l2)))
+	   (and (eqan? (car l1) (car l2))
+		(eqlist? (cdr l1) (cdr l2))))
+	  ((or (atom? (car l1)) (atom? (car l2)))
+	   #f)
+	  (else (and (eqlist2? (car l1) (car l2))
+		     (eqlist2? (cdr l1) (cdr l2)))))))
+
+;;; P92/93 "equal?"
+(define equal?
+  (lambda (s1 s2)
+    (cond ((and (atom? s1) (atom? s2))
+	   (eqan? s1 s2))
+	  ((or (atom? s1) (atom? s2)) #f)
+	  (else (eqlist2? s1 s2)))))
+
+;;; P93 "eqlist3?" using equal?
+(define eqlist3?
+  (lambda (l1 l2)
+    (cond ((and (null? l1) (null? l2)) #t)
+	  ((or (null? l1) (null? l2)) #f)
+	  (else (and (equal? (car l1) (car l2))
+		     (equal? (cdr l1) (cdr l2)))))))
+		
+;;; P94 "simply-rember"
+
+;;; P100 "numbered?"
+(define numbered?
+  (lambda (aexp)
+    (cond ((atom? aexp) (number? aexp))
+	  ((eq? (car (cdr aexp)) (quote +))
+	   (and (numbered? (car aexp)) 
+		(numbered? (car (cdr (cdr aexp))))))
+	  ((eq? (car (cdr aexp)) (quote -))
+	   (and (numbered? (car aexp))
+		(numbered? (car (cdr (cdr aexp))))))
+	  ((eq? (car (cdr aexp)) (quote *))
+	   (and (numbered? (car aexp))
+		(numbered? (car (cdr (cdr aexp))))))
+	  ((eq? (car (cdr aexp)) (quote /))
+	   (and (numbered? (car aexp))
+		(numbered? (car (cdr (cdr aexp)))))))))
+
+;;; P101 "simply-numbered?"
+(define simply-numbered?
+  (lambda (aexp)
+    (cond ((atom? aexp) (number? aexp))
+	  (else (and (numbered? (car aexp))
+	       (numbered? (car (cdr (cdr aexp)))))))))
+
+;;; P102 "value"
+(define value
+  (lambda (aexp)
+    (cond ((atom? aexp) (cond ((number? aexp) aexp)))
+	  ((eq? (car (cdr aexp)) (quote +))
+	   (+ (value (car aexp))
+	      (value (car (cdr (cdr aexp))))))
+	  ((eq? (car (cdr aexp)) (quote -))
+	   (- (value (car aexp))
+	      (value (car (cdr (cdr aexp))))))
+	  ((eq? (car (cdr aexp)) (quote *))
+	   (* (value (car aexp))
+	      (value (car (cdr (cdr aexp))))))
+	  ((eq? (car (cdr aexp)) (quote /))
+	   (/ (value (car aexp))
+	      (value (car (cdr (cdr aexp)))))))))
