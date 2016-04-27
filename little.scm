@@ -511,3 +511,64 @@
   (lambda (rel)
     (and (fun? rel)
 	 (fun? (revrel2 rel)))))
+
+;;; P126 "rember-f"
+(define rember-f
+  (lambda (func a list)
+    (cond ((null? list) (quote ()))
+	  (else (cond ((func (car list) a) (cdr list))
+		      (else (cons (car list) (rember-f func a (cdr list)))))))))
+
+;;; P126 "rember-f-sv"
+(define rember-f-sv
+  (lambda (func a list)
+    (cond ((null? list) (quote ()))
+	  ((func (car list) a) (cdr list))
+	  (else (cons (car list) (rember-f-sv func a (cdr list)))))))
+
+;;; P127 "eq?-c"
+(define eq?-c
+  (lambda (a)
+    (lambda (x)
+      (eq? x a))))
+
+;;; P128 "rember-f-new"
+(define rember-f-new
+  (lambda (func)
+    (lambda (a list)
+      (cond ((null? list) (quote ()))
+	    ((func (car list) a) (cdr list))
+	    (else (cons (car list) ((rember-f-new func) a (cdr list))))))))
+
+;;; P130 "insertL-f"    
+(define insertL-f
+  (lambda (func)
+    (lambda (new old list)
+      (cond ((null? list) (quote ()))
+	    ((func (car list) old) (cons new (cons old (cdr list))))
+	    (else (cons (car list) ((insertL-f func) new old (cdr list))))))))
+
+;;; P130 "insertR-f"
+(define insertR-f
+  (lambda (func)
+    (lambda (new old list)
+      (cond ((null? list) (quote ()))
+	    ((func (car list) old) (cons old (cons new (cdr list))))
+	    (else (cons (car list) ((insertR-f func) new old (cdr list))))))))
+;;; P131 "seqL"
+(define seqL
+  (lambda (new old list)
+    (cons new (cons old list))))
+
+;;; P131 "seqR"
+(define seqR
+  (lambda (new old list)
+    (cons old (cons new list))))
+    
+;;; P132
+(define insert-g
+  (lambda (seq)
+    (lambda (new old list)
+      (cond ((null? list) (quote ()))
+	    ((eq? (car list) old) (seq new old (cdr list)))
+	    (else (cons (car list) ((insert-g seq) new old (cdr list))))))))
