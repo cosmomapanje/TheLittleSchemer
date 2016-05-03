@@ -572,3 +572,40 @@
       (cond ((null? list) (quote ()))
 	    ((eq? (car list) old) (seq new old (cdr list)))
 	    (else (cons (car list) ((insert-g seq) new old (cdr list))))))))
+;;; P132
+(define insertR-fn
+  (insert-g seqR))
+
+;;; P132
+(define insertL-fn
+  (insert-g seqL))
+
+;;; P133
+(define seqS
+  (lambda (new old l)
+	(cons new l)))
+
+;;; P133 subst_fn
+(define subst_fn
+  (insert-g seqS))
+
+;;; P133 yyy
+(define yyy
+  (lambda (a l)
+	((insert-g seqrem) #f a l)))
+
+;;; P133 seqrem
+(define seqrem
+  (lambda (new old l)
+	l))
+
+;;; P135 multirember-f
+(define multirember-f
+  (lambda (test-func)
+	(lambda (a lat)
+	  (cond ((null? lat) (quote ()))
+			((test-func a (car lat))
+			 (multirember-f test-func) a (cdr lat))
+			(else (cons (car lat)
+						((multirember-f test-func) a
+						 (cdr lat))))))))
