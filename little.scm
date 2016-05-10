@@ -605,7 +605,62 @@
 	(lambda (a lat)
 	  (cond ((null? lat) (quote ()))
 			((test-func a (car lat))
-			 (multirember-f test-func) a (cdr lat))
+			 ((multirember-f test-func) a (cdr lat)))
 			(else (cons (car lat)
 						((multirember-f test-func) a
 						 (cdr lat))))))))
+
+;;; P136 eq?-tuna
+(define eq?-tuna
+  (eq?-c (quote tuna)))
+
+;;; P137 multiremberT
+(define multiremberT
+  (lambda (test-func lat)
+	(cond ((null? lat) (quote ()))
+		  ((test-func (car lat))
+		   (multiremberT test-func (cdr lat)))
+		  (else (cons (car lat)
+					  (multiremberT test-func (cdr lat)))))))
+
+;;; P137 multirember-co
+(define multirember-co
+  (lambda (a lat col)
+	(cond ((null? lat)
+		   (col (quote ()) (quote ())))
+		  ((eq? (car lat) a)
+		   (multirember-co a (cdr lat)
+						   (lambda (newlat seen)
+							 (col newlat
+								  (cons (car lat) seen)))))
+		  (else
+		   (multirember-co a (cdr lat)
+						   (lambda (newlat seen)
+							 (col (cons (car lat) newlat)
+								  seen)))))))
+
+;;; P138 a-friend
+(define a-friend
+  (lambda (x y)
+	(null? y)))
+
+; (multirember-co a lat col)
+
+; a is tuna
+; lat is ()
+; col is a-friend
+; => #t 
+
+; a is tuna
+; lat is (tuna)
+; col is a-friend
+; =>
+
+; a is tuna
+; lat is (strawberries tuna and swordfish)
+; col is a-friend
+
+;;; P140 last-friend
+(define last-friend
+  (lambda (x y)
+	(length x)))
