@@ -664,3 +664,36 @@
 (define last-friend
   (lambda (x y)
 	(length x)))
+
+;;; P141 multiinsertLR
+(define multiinsertLR
+  (lambda (new oldL oldR lat)
+	(cond ((null? lat) (quote ()))
+		  ((eq? (car lat) oldL)
+		   (cons new
+				 (cons oldL (multiinsertLR new oldL oldR (cdr lat)))))
+		  ((eq? (car lat) oldR)
+		   (cons oldR
+				 (cons new (multiinsertLR new oldL oldR (cdr lat)))))
+		  (else (cons (car lat) (multiinsertLR new oldL oldR (cdr lat)))))))
+
+;;; P142 multiinsertLR-co
+(define multiinsertLR-co
+  (lambda (new oldL oldR lat col)
+	(cond ((null? lat)
+		   (col ((quote ()) 0 0)))
+		  ((eq? oldL (car lat))
+		   (multiinsertLR-co new oldL oldR
+							 (cdr lat)
+							 (lambda (newlat L R)
+							   ())))
+		  ((eq? oldR (car lat))
+		   (multiinsertLR-co new oldL oldR
+							 (cdr lat)
+							 (lambda (newlat L R)
+							   ())))
+		  (else
+		   (multiinsertLR-co new oldL oldR
+							 (cdr lat)
+							 (lambda (newlat L R)
+							   ()))))))
